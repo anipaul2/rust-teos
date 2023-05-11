@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="menu-button">&#9776;</div>
+        <div class="nav-button">
+            <div id="menu">
+                <div id="cross-button">&times;</div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="mailto:contact@talaia.watch" target="_blank">Contact</a>
+                <a href="https://github.com/talaia-labs/rust-teos" target="_blank">Github</a>
+                <a href="https://discord.com/invite/EyVbrNMDUP" target="_blank">Discord</a>
+            </div>
+        </div>
+        <h1 class="title">About Lightning Guard</h1>
+        <img src="https://www.talaia.watch/img/logo.jpg" class="logo" alt="Logo"> 
+        <div class="about-container">
+            <p class="about-description">
+                The Lightning Guard is a powerful watchtower misbehavior detection tool designed to enhance the security of Lightning Network transactions. It acts as a failsafe mechanism, protecting Lightning nodes from potential fraud by monitoring and verifying the integrity of channel updates. With the Lightning Guard, users can submit their signed receipts, which contain crucial information about the interaction between the watchtower and Lightning nodes.
+            </p>
+            <p class="about-description">
+                By analyzing the submitted signed receipts, the Lightning Guard's algorithm detect any potential misbehavior or fraudulent activities. It verifies the authenticity and integrity of the transactions, providing users with confidence in the security of their Lightning Network channels.
+            </p>
+        </div>
+        <p id="result"></p>
+        <footer>&copy; 2023 - Talaia Labs</footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

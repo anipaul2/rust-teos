@@ -1,0 +1,27 @@
+[package]
+name = "misbehaviour_tool"
+version = "0.1.0"
+authors = ["Aniketh Paul <aniketh131@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+# General
+serde = "1.0.130"
+hex = { version = "0.4.3", features = [ "serde" ] }
+
+# Bitcoin and Lightning
+bitcoin = { version = "0.28.0", features = [ "use-serde" ] }
+
+# Local
+teos-common = { path = "../../teos-common" }
+
+[dev-dependencies]
+rand = "0.8.4"
+tempdir = "0.3.7"
+
+[build-dependencies]
+tonic-build = "0.6"
+
+[[bin]]
+name = "misbehaviour_tool"
+path = "src/main.rs"

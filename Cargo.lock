@@ -1407,6 +1407,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "misbehaviour_tool"
+version = "0.1.0"
+dependencies = [
+ "bitcoin",
+ "hex",
+ "rand 0.8.5",
+ "serde",
+ "tempdir",
+ "teos-common",
+ "tonic-build",
+]
+
+[[package]]
 name = "mockito"
 version = "0.32.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
