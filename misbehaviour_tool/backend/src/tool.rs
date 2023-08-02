@@ -32,7 +32,7 @@ pub fn check_receipts(
 
     // Now check the tower's signature on the user's signature
     let recovered_id =
-        TowerId(recover_pk(user_signature.as_bytes(), &app_receipt.signature().unwrap()).unwrap());
+        TowerId(recover_pk(app_receipt.to_vec().as_slice(), &app_receipt.signature().unwrap()).unwrap());
     let app_receipt_check = recovered_id == *tower_id;
 
     // Print the results of the checks for debugging
