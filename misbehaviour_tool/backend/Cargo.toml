@@ -8,12 +8,14 @@ edition = "2018"
 # General
 serde = "1.0.130"
 hex = { version = "0.4.3", features = [ "serde" ] }
+tokio = { version = "1", features = ["full", "macros"] }
 
 # Bitcoin and Lightning
 bitcoin = { version = "0.28.0", features = [ "use-serde" ] }
 
 # Local
 teos-common = { path = "../../teos-common" }
+teos = { path = "../../teos" }
 
 [dev-dependencies]
 rand = "0.8.4"

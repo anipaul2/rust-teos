@@ -2,11 +2,37 @@ use teos_common::appointment::Appointment;
 use teos_common::cryptography::recover_pk;
 use teos_common::receipts::{AppointmentReceipt, RegistrationReceipt};
 use teos_common::{TowerId, UserId};
+use teos::bitcoin_cli::BitcoindClient;
+use bitcoin::Txid;
+use bitcoin::consensus::serialize;
+use bitcoin::hashes::{sha256d, Hash};
 
 #[derive(Debug)]
 pub enum ReceiptCheckError {
     ReceiptVerificationFailed,
     AppointmentOutsideSubscription,
+    TransactionNotResponded,
+}
+
+async fn fetch_transaction(host: &str, port: u16, rpc_user: &str, rpc_password: &str, teos_network: &str, txid: &Txid) -> Result<bitcoin::Transaction, std::io::Error> {
+    let client = BitcoindClient::new(host, port, rpc_user, rpc_password, teos_network).await?;
+    client.get_raw_transaction(txid).await
+}
+
+fn check_appointment_sync(
+    host: &str,
+    port: u16,
+    rpc_user: &str,
+    rpc_password: &str,
+    teos_network: &str,
+    appointment: &Appointment,
+) -> Result<bool, std::io::Error> {
+    let txid_bytes = &appointment.locator.as_ref();
+    let txid_hash = sha256d::Hash::from_slice(txid_bytes).expect("Failed to convert to sha256d::Hash");
+    let txid: Txid = txid_hash.into();
+    let raw_tx = tokio::runtime::Runtime::new().unwrap().block_on(fetch_transaction(host, port, rpc_user, rpc_password, teos_network, &txid))?;
+    let raw_tx_bytes = serialize(&raw_tx);
+    Ok(raw_tx_bytes == appointment.encrypted_blob)
 }
 
 pub fn check_signature(
@@ -19,6 +45,11 @@ pub fn check_signature(
 }
 
 pub fn check_receipts(
+    host: &str,
+    port: u16,
+    rpc_user: &str,
+    rpc_password: &str,
+    teos_network: &str,
     user_id: &UserId,
     tower_id: &TowerId,
     reg_receipt: &RegistrationReceipt,
@@ -61,6 +92,13 @@ pub fn check_receipts(
         return Err(ReceiptCheckError::AppointmentOutsideSubscription);
     }
 
+    let appointment_check = check_appointment_sync(host, port, rpc_user, rpc_password, teos_network, &appointment);
+    if let Err(_) = appointment_check {
+    return Err(ReceiptCheckError::TransactionNotResponded);
+}
+if !appointment_check.unwrap() {
+    return Err(ReceiptCheckError::ReceiptVerificationFailed);
+}
     // If everything is fine, return true
     Ok(true)
 }
